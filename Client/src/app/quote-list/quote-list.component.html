@@ -1,0 +1,47 @@
+<h1>Список цитат</h1>
+
+<div id="filter-panel" class=" filter-panel">
+  <div class="panel panel-default">
+      <div class="panel-body">
+          <form class="form-inline" role="form">
+              <div class="form-group col-md-4">
+                  <label class="filter-col" style="margin-right:0;" for="pref-perpage">Категории:</label>
+                  <select name="categoryFilter" class="form-control" [(ngModel)]="selectedCategory">
+                        <option *ngFor="let c of categories" [ngValue]="c">{{c.title}}</option>
+                  </select>
+              </div> <!-- form group -->
+              <div class="form-group col-md-4">
+                  <label class="filter-col" style="margin-right:0;" for="pref-search">Автор цитаты:</label>
+                  <input name="authorFilter" type="text" class="form-control input-sm" id="pref-search" #authorFilter>
+              </div><!-- form group -->
+              <div class="form-group">    
+                  <button type="submit" class="btn btn-default filter-col" (click)="onFilter(authorFilter.value)">
+                      <span class="glyphicon glyphicon-search"></span> Filter
+                  </button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>  
+
+<table class="table table-hover">
+    <tr class="header">
+      <th style="width:20%;">Автор</th>
+      <th style="width:30%;">Цитата</th>
+      <th style="width:15%;">Создана</th>
+      <th style="width:15%;">Категория</th>
+      <th style="width:20%;"></th>
+    </tr>
+    <tr *ngFor="let quote of quotes; let i = index;">      
+      <td>{{ quote.author }}</td>
+      <td>{{ quote.text }}</td>
+      <td>{{ quote.created | date: 'short' }}</td>
+      <td>{{ quote.categoryTitle }}</td>      
+      <td>
+        <a [routerLink]="[ '/quotes', quote.id ]" class="btn btn-default">Изменить</a>
+        <a class="btn btn-default" (click)="onDelete(quote.id, i)">Удалить</a>
+      </td>
+    </tr>
+</table>
+
+<a [routerLink]="[ '/quotes', 'add' ]" class="btn btn-default">Добавить</a>
