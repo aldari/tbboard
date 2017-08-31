@@ -22,7 +22,7 @@ namespace Tests
         public void Test()
         {
             var repo = new QuoteRepository();
-            var quotes = repo.GetQuotes();
+            var quotes = repo.GetQuotes("", "");
             //quotes.ForEach(x => Console.WriteLine($"{x.Id} {x.Author} {x.Category.Title} {x.Created} {x.Text} "));
         }
 

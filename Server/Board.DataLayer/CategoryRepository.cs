@@ -1,5 +1,6 @@
 ﻿using Board.DataLayer;
 using Dapper.Contrib.Extensions;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -8,14 +9,16 @@ namespace DataLayer
 {
     public class CategoryRepository : ICategoryRepository
     {
-        public CategoryRepository()
-        {
+        public ConnectionConfig ConnectionConfig { get; }
 
+        public CategoryRepository(IOptions<ConnectionConfig> connectionConfig)
+        {
+            ConnectionConfig = connectionConfig.Value;
         }
 
         private SqlConnection GetConnection()
         {
-            return new SqlConnection("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = QuoteList; Integrated Security = True; MultipleActiveResultSets = True");
+            return new SqlConnection(ConnectionConfig.DefaultConnection);
         }
 
         public List<Category> GetCategories()

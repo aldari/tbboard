@@ -1,6 +1,7 @@
 ﻿using Board.DataLayer;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,17 +12,19 @@ namespace DataLayer
 {
     public class QuoteRepository : IQuoteRepository
     {
-        public QuoteRepository()
-        {
+        public ConnectionConfig ConnectionConfig { get; }
 
+        public QuoteRepository(IOptions<ConnectionConfig> connectionConfig)
+        {
+            ConnectionConfig = connectionConfig.Value;
         }
 
         private SqlConnection GetConnection()
         {
-            return new SqlConnection("Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = QuoteList; Integrated Security = True; MultipleActiveResultSets = True");
+            return new SqlConnection(ConnectionConfig.DefaultConnection);
         }
 
-        public List<Quote> GetQuotes()
+        public List<Quote> GetQuotes(string author, string categ_id)
         {
             using (var connection = GetConnection())
             {
@@ -31,13 +34,17 @@ namespace DataLayer
                     SELECT q.Id, q.Author, q.Created, q.Text, c.Id, c.Title
                     FROM Quotes q
                     INNER JOIN Categories c ON c.Id = q.CategoryId
+                    where (@author_param is null or q.Author = @author_param)
+                    and (@category_param is null or q.CategoryId = @category_param)
+                    order by q.created
                     ", (quote, category) => {
                     quote.Category = category;
                     return quote;
                 },
                     commandType: CommandType.Text,
-                     splitOn: "Id"
-                     ).ToList();
+                    splitOn: "Id",
+                    param: new { author_param = author, category_param = categ_id }
+                ).ToList();
 
                 return quotes;
             }

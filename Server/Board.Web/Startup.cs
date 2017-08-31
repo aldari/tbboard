@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DataLayer;
+using Board.DataLayer;
 
 namespace Board.Web
 {
@@ -28,6 +29,10 @@ namespace Board.Web
             services.AddTransient<IQuoteRepository, QuoteRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
 
+            //Configuration.GetConnectionString("BloggingDatabase");
+            OptionsConfigurationServiceCollectionExtensions
+                .Configure<ConnectionConfig>(services, Configuration.GetSection("ConnectionStrings"));
+
             // Add framework services.
             services.AddMvc();
         }
@@ -35,7 +40,7 @@ namespace Board.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();

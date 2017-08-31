@@ -21,9 +21,10 @@ namespace Board.Web.Controllers
         }        
 
         [HttpGet]
-        public IEnumerable<QuoteVm> GetAll(string author = "", string catid = "")
+        public IEnumerable<QuoteVm> GetAll(string author = null, string catid = null)
         {
-            return _repository.GetQuotes()
+            // automapper
+            return _repository.GetQuotes(author, catid)
                 .Select(x => new QuoteVm { Id = x.Id, Author = x.Author, CategoryId = x.Category.Id.ToString(), CategoryTitle = x.Category.Title, Created = x.Created, Text = x.Text }).ToList();
         }
 
@@ -31,18 +32,18 @@ namespace Board.Web.Controllers
         public IActionResult GetById(Guid id)
         {
             var item = _repository.GetById(id);
-            if (item == null)
-            {
+            if (item == null) {
                 return NotFound();
             }
+
+            // automapper
             return new ObjectResult(new QuoteVm { Id = item.Id, Author = item.Author, CategoryId = item.Category.Id.ToString(), CategoryTitle = item.Category.Title, Created = item.Created, Text = item.Text });
         }
 
         [HttpPost()]
         public IActionResult Create([FromBody]QuoteAddVm model)
         {
-            if (model == null)
-            {
+            if (model == null) {
                 return BadRequest();
             }
 
@@ -55,14 +56,12 @@ namespace Board.Web.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(Guid id, [FromBody] QuoteEditItem item)
         {
-            if (item == null || Guid.Parse(item.Id) != id)
-            {
+            if (item == null || Guid.Parse(item.Id) != id) {
                 return BadRequest();
             }
 
             var todo = _repository.GetById(Guid.Parse(item.Id));
-            if (todo == null)
-            {
+            if (todo == null) {
                 return NotFound();
             }
 
@@ -77,8 +76,7 @@ namespace Board.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            if (!_repository.Delete(id))
-            {
+            if (!_repository.Delete(id)) {
                 return NotFound();
             }
 
