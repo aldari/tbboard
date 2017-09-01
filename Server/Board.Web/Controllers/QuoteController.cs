@@ -5,6 +5,7 @@ using Board.DataLayer;
 using System;
 using System.Linq;
 using Board.Web.Models;
+using AutoMapper;
 
 namespace Board.Web.Controllers
 {
@@ -13,19 +14,20 @@ namespace Board.Web.Controllers
     {
         private IQuoteRepository _repository;
         private ICategoryRepository _categoryRepository;
+        private IMapper _mapper;
 
-        public QuoteController(IQuoteRepository repository, ICategoryRepository categoryRepository)
+        public QuoteController(IQuoteRepository repository, ICategoryRepository categoryRepository, IMapper mapper)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }        
 
         [HttpGet]
         public IEnumerable<QuoteVm> GetAll(string author = null, string catid = null)
         {
-            // automapper
-            return _repository.GetQuotes(author, catid)
-                .Select(x => new QuoteVm { Id = x.Id, Author = x.Author, CategoryId = x.Category.Id.ToString(), CategoryTitle = x.Category.Title, Created = x.Created, Text = x.Text }).ToList();
+            var quotes = _repository.GetQuotes(author, catid);
+            return _mapper.Map<List<QuoteVm>>(quotes);
         }
 
         [HttpGet("{id}")]
@@ -35,9 +37,7 @@ namespace Board.Web.Controllers
             if (item == null) {
                 return NotFound();
             }
-
-            // automapper
-            return new ObjectResult(new QuoteVm { Id = item.Id, Author = item.Author, CategoryId = item.Category.Id.ToString(), CategoryTitle = item.Category.Title, Created = item.Created, Text = item.Text });
+            return new ObjectResult(_mapper.Map<QuoteVm>(item));
         }
 
         [HttpPost()]

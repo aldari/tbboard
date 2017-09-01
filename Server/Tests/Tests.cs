@@ -13,26 +13,28 @@ namespace Tests
     [TestFixture]
     public class Tests
     {
+        private ConnectionConfig _conectionConfig;
+
         private SqlConnection GetConnection()
         {
             return new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=QuoteList;Integrated Security=True; MultipleActiveResultSets=True");
         }
 
-        [Test]
-        public void Test()
-        {
-            var repo = new QuoteRepository();
-            var quotes = repo.GetQuotes("", "");
-            //quotes.ForEach(x => Console.WriteLine($"{x.Id} {x.Author} {x.Category.Title} {x.Created} {x.Text} "));
-        }
+        //[Test]
+        //public void Test()
+        //{
+        //    var repo = new QuoteRepository();
+        //    var quotes = repo.GetQuotes("", "");
+        //    //quotes.ForEach(x => Console.WriteLine($"{x.Id} {x.Author} {x.Category.Title} {x.Created} {x.Text} "));
+        //}
 
-        [Test]
-        public void Test2()
-        {
-            var repo = new QuoteRepository();
-            var x = repo.GetById(Guid.Parse("3E6DAE45-8A16-4A1A-9D7B-6AAADFB7562F"));
-            Console.WriteLine($"{x.Id} {x.Author} {x.Category.Title} {x.Created} {x.Text} ");
-        }
+        //[Test]
+        //public void Test2()
+        //{
+        //    var repo = new QuoteRepository();
+        //    var x = repo.GetById(Guid.Parse("3E6DAE45-8A16-4A1A-9D7B-6AAADFB7562F"));
+        //    Console.WriteLine($"{x.Id} {x.Author} {x.Category.Title} {x.Created} {x.Text} ");
+        //}
 
         [Test]
         public void TestGetAllCategories()

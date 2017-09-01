@@ -29,6 +29,15 @@ namespace Board.Web
             services.AddTransient<IQuoteRepository, QuoteRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
 
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfileConfiguration());
+            });
+
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
+            services.AddMvc();
+
             //Configuration.GetConnectionString("BloggingDatabase");
             OptionsConfigurationServiceCollectionExtensions
                 .Configure<ConnectionConfig>(services, Configuration.GetSection("ConnectionStrings"));

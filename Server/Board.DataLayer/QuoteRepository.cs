@@ -34,7 +34,7 @@ namespace DataLayer
                     SELECT q.Id, q.Author, q.Created, q.Text, c.Id, c.Title
                     FROM Quotes q
                     INNER JOIN Categories c ON c.Id = q.CategoryId
-                    where (@author_param is null or q.Author = @author_param)
+                    where (@author_param is null or q.Author like N'%'+@author_param+N'%')
                     and (@category_param is null or q.CategoryId = @category_param)
                     order by q.created
                     ", (quote, category) => {
